@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Summarize - AI Study Assistant</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>📚 Summarize Study Material</h1>
+        <p>Turn your study material into concise notes</p>
+    </header>
+
+    <main>
+
+        <section class="welcome">
+
+            <h2>Enter Your Study Material</h2>
+
+            <form action="/summarize" method="POST">
+
+                <textarea
+                    name="text"
+                    rows="15"
+                    cols="80"
+                    placeholder="Paste your study material here..."
+                    required
+                ></textarea>
+
+                <br><br>
+
+                <button type="submit">
+                    ✨ Generate Summary
+                </button>
+
+            </form>
+
+        </section>
+
+
+        {% if summary %}
+
+        <section class="feature-card">
+
+            <h2>📖 Summary</h2>
+
+            <p style="white-space: pre-line;">
+                {{ summary }}
+            </p>
+
+        </section>
+
+        {% endif %}
+
+
+        <br>
+
+        <a href="/">
+            ← Back to Home
+        </a>
+
+    </main>
+
+</body>
+
+</html>

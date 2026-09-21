@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<meta name="viewport"
+		  content="width=device-width, initial-scale=1.0">
+
+	<title>Generate Quiz - AI Study Assistant</title>
+
+	<link rel="stylesheet"
+		  href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+	<header>
+
+		<h1>❓ Generate Practice Quiz</h1>
+
+		<p>Test your knowledge using AI-generated questions</p>
+
+	</header>
+
+
+	<main>
+
+		<section class="welcome">
+
+			<h2>Enter Your Study Material</h2>
+
+			<form action="/quiz" method="POST">
+
+				<textarea
+					name="text"
+					rows="15"
+					cols="80"
+					placeholder="Paste your study material here..."
+					required
+				>{{ text if text else "" }}</textarea>
+
+				<br><br>
+
+				<button type="submit">
+					✨ Generate Quiz
+				</button>
+
+			</form>
+
+		</section>
+
+
+		{% if quiz %}
+
+		<section class="feature-card">
+
+			<h2>📝 Your Practice Quiz</h2>
+
+			<p style="white-space: pre-line;">
+				{{ quiz }}
+			</p>
+
+		</section>
+
+		{% endif %}
+
+
+		<br>
+
+		<a href="/">
+			← Back to Home
+		</a>
+
+	</main>
+
+</body>
+
+</html>

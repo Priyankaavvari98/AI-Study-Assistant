@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<meta name="viewport"
+		  content="width=device-width, initial-scale=1.0">
+
+	<title>Ask Question - AI Study Assistant</title>
+
+	<link rel="stylesheet"
+		  href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+	<header>
+
+		<h1>💡 Ask a Question</h1>
+
+		<p>Get answers from your study material</p>
+
+	</header>
+
+
+	<main>
+
+		<section class="welcome">
+
+			<h2>Enter Your Study Material</h2>
+
+			<form action="/ask" method="POST">
+
+				<textarea
+					name="study_material"
+					rows="12"
+					cols="80"
+					placeholder="Paste your study material here..."
+					required
+				>{{ study_material if study_material else "" }}</textarea>
+
+				<br><br>
+
+
+				<h2>Ask Your Question</h2>
+
+				<textarea
+					name="question"
+					rows="4"
+					cols="80"
+					placeholder="Example: What is a primary key?"
+					required
+				>{{ question if question else "" }}</textarea>
+
+				<br><br>
+
+				<button type="submit">
+					✨ Get Answer
+				</button>
+
+			</form>
+
+		</section>
+
+
+		{% if answer %}
+
+		<section class="feature-card">
+
+			<h2>📖 Answer</h2>
+
+			<p style="white-space: pre-line;">
+				{{ answer }}
+			</p>
+
+		</section>
+
+		{% endif %}
+
+
+		<br>
+
+		<a href="/">
+			← Back to Home
+		</a>
+
+	</main>
+
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Study Notes - AI Study Assistant</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>Study Notes</h1>
+
+        <p>Create and manage your study material</p>
+
+    </header>
+
+
+    <main>
+
+        <section class="welcome">
+
+            <h2>Create a New Note</h2>
+
+            <form action="/notes/add"
+                  method="POST">
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Note title"
+                    required
+                >
+
+                <br><br>
+
+                <textarea
+                    name="content"
+                    placeholder="Enter your study material..."
+                    rows="10"
+                    required
+                ></textarea>
+
+                <br><br>
+
+                <button type="submit">
+                    Save Note
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <section>
+
+            <h2>Saved Notes</h2>
+
+            {% if notes %}
+
+                {% for note in notes %}
+
+                    <div class="feature-card">
+
+                        <h3>{{ note["title"] }}</h3>
+
+                        <p>
+                            {{ note["content"] }}
+                        </p>
+
+                        <form
+                            action="/notes/delete/{{ note['id'] }}"
+                            method="POST">
+
+                            <button type="submit">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    <br>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No study notes yet.</p>
+
+            {% endif %}
+
+        </section>
+
+
+        <br>
+
+        <a href="/">
+            ← Back to Home
+        </a>
+
+    </main>
+
+</body>
+
+</html>
