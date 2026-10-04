@@ -33,6 +33,7 @@ initialize_database()
 # --------------------------------------------------
 
 def login_required(route_function):
+
     @wraps(route_function)
     def wrapper(*args, **kwargs):
 
@@ -45,10 +46,11 @@ def login_required(route_function):
 
 
 # --------------------------------------------------
-# Home page
+# Home / Main Dashboard
 # --------------------------------------------------
 
 @app.route("/")
+@login_required
 def home():
 
     return render_template("index.html")
@@ -68,6 +70,7 @@ def register():
 
         # Validate input
         if not username or not password:
+
             return render_template(
                 "register.html",
                 error="Username and password are required."
@@ -77,12 +80,13 @@ def register():
         existing_user = get_user_by_username(username)
 
         if existing_user:
+
             return render_template(
                 "register.html",
                 error="Username already exists."
             )
 
-        # Hash the password before storing it
+        # Hash password before storing it
         hashed_password = generate_password_hash(password)
 
         create_user(username, hashed_password)
@@ -107,13 +111,17 @@ def login():
         user = get_user_by_username(username)
 
         # Check username and password
-        if user and check_password_hash(user["password"], password):
+        if user and check_password_hash(
+            user["password"],
+            password
+        ):
 
-            # Store logged-in user's information in session
+            # Store logged-in user's information
             session["user_id"] = user["id"]
             session["username"] = user["username"]
 
-            return redirect(url_for("notes"))
+            # Go to main dashboard after login
+            return redirect(url_for("home"))
 
         return render_template(
             "login.html",
@@ -303,6 +311,7 @@ def ask():
 # --------------------------------------------------
 
 if __name__ == "__main__":
+
     app.run(
         debug=True,
         use_reloader=False

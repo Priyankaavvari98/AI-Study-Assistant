@@ -13,7 +13,7 @@ def get_connection():
 def initialize_database():
     connection = get_connection()
 
-    # Users table
+    # Create users table
     connection.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +22,7 @@ def initialize_database():
         )
     """)
 
-    # Notes table
+    # Create notes table for new databases
     connection.execute("""
         CREATE TABLE IF NOT EXISTS notes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,6 +32,20 @@ def initialize_database():
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     """)
+
+    # Check whether the existing notes table already has user_id
+    columns = connection.execute("""
+        PRAGMA table_info(notes)
+    """).fetchall()
+
+    column_names = [column["name"] for column in columns]
+
+    # If this is an older database, add the user_id column
+    if "user_id" not in column_names:
+        connection.execute("""
+            ALTER TABLE notes
+            ADD COLUMN user_id INTEGER
+        """)
 
     connection.commit()
     connection.close()
@@ -60,7 +74,8 @@ def get_user_by_username(username):
     connection = get_connection()
 
     user = connection.execute("""
-        SELECT * FROM users
+        SELECT *
+        FROM users
         WHERE username = ?
     """, (username,)).fetchone()
 
@@ -73,7 +88,8 @@ def get_all_notes(user_id):
     connection = get_connection()
 
     notes = connection.execute("""
-        SELECT * FROM notes
+        SELECT *
+        FROM notes
         WHERE user_id = ?
         ORDER BY id DESC
     """, (user_id,)).fetchall()
@@ -105,4 +121,3 @@ def delete_note(note_id, user_id):
 
     connection.commit()
     connection.close()
-    

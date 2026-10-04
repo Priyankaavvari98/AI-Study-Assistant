@@ -16,7 +16,10 @@
 </head>
 
 <body>
-
+<div class="user-bar">
+        <span>Welcome, {{ session["username"] }}!</span>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
     <header>
 
         <h1>Study Notes</h1>

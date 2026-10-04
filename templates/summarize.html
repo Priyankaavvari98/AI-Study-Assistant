@@ -14,7 +14,10 @@
 </head>
 
 <body>
-
+<div class="user-bar">
+    <span>Welcome, {{ session["username"] }}!</span>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
     <header>
         <h1>📚 Summarize Study Material</h1>
         <p>Turn your study material into concise notes</p>
