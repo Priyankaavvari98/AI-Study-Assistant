@@ -1,11 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+
 from werkzeug.utils import secure_filename
+
 from functools import wraps
+
 import os
 
 from pypdf import PdfReader
+
 from docx import Document
+
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 from database import (
     initialize_database,
@@ -15,6 +21,7 @@ from database import (
     add_note,
     delete_note
 )
+
 
 from ai_service import summarize_text, generate_quiz, answer_question
 
@@ -27,6 +34,7 @@ app = Flask(__name__)
 # --------------------------------------------------
 
 UPLOAD_FOLDER = "uploads"
+
 ALLOWED_EXTENSIONS = {"pdf", "docx", "txt"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -449,10 +457,23 @@ def quiz():
 
         text = request.form["text"]
 
+        # Get number of questions selected by user
+        number_of_questions = int(
+            request.form.get(
+                "number_of_questions",
+                5
+            )
+        )
+
+        # Keep the allowed choices simple
+        if number_of_questions not in [5, 10, 15]:
+            number_of_questions = 5
+
         try:
 
             quiz = generate_quiz(
-                text
+                text,
+                number_of_questions
             )
 
             return render_template(

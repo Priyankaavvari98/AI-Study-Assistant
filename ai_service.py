@@ -12,7 +12,7 @@ client = genai.Client(api_key=api_key)
 
 
 def summarize_text(text):
-	prompt = f"""
+    prompt = f"""
 You are an AI study assistant.
 
 Summarize the following study material clearly and concisely.
@@ -27,20 +27,22 @@ Study material:
 {text}
 """
 
-	response = client.models.generate_content(
-		model="gemini-3.6-flash",
-		contents=prompt
-	)
+    response = client.models.generate_content(
+        model="gemini-3.6-flash",
+        contents=prompt
+    )
 
-	return response.text
-def generate_quiz(text):
+    return response.text
+
+
+def generate_quiz(text, number_of_questions=5):
 
     prompt = f"""
 You are an AI study assistant.
 
 Create a practice quiz based ONLY on the study material provided below.
 
-Generate 5 multiple-choice questions.
+Generate exactly {number_of_questions} multiple-choice questions.
 
 For each question:
 - Provide 4 answer choices labeled A, B, C, and D.
@@ -60,6 +62,8 @@ Study material:
     )
 
     return response.text
+
+
 def answer_question(study_material, question):
 
     prompt = f"""
