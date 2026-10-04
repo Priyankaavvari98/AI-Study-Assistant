@@ -63,3 +63,17 @@ button:hover {
 		grid-template-columns: 1fr;
 	}
 }
+.user-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    margin-bottom: 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.user-bar a {
+    text-decoration: none;
+    font-weight: bold;
+}
