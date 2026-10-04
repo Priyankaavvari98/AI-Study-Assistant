@@ -1,75 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>AI Study Assistant</title>
+    <title>AI Study Assistant</title>
 
-	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-	<header>
-		<h2>Welcome To AI Study Assistant</h>
-		<p>Hello! This is Rocky, your intelligent study companion</p>
-	</header>
+    <header>
+        <h2>Welcome To AI Study Assistant</h2>
+        <p>Hello! This is Rocky, your intelligent study companion</p>
+    </header>
 
-	<main>
+    <main>
 
-		<section class="welcome">
+        <section class="welcome">
 
-			<p>
-				I can help you to summarize study material, generate practice
-				quizzes, and ask questions about your notes.
-			</p>
-		</section>
+            <p>
+                I can help you to summarize study material, generate practice
+                quizzes, and ask questions about your notes.
+            </p>
 
-		<section class="features">
+        </section>
 
-			<div class="feature-card">
-				<h3>📝 Study Notes</h3>
-				<p>Create and manage your study notes.</p>
-				<a href="/notes">
-    <button type="button">View Notes</button>
-</a>
-			</div>
 
-			<div class="feature-card">
-				<h3>📚 Summarize</h3>
-				<p>Generate concise summaries from your study material.</p>
-				<a href="/summarize">
-        <button type="button">
-            Summarize
-        </button>
-    </a>
+        <section class="features">
 
-			</div>
+            <!-- Study Notes -->
+            <div class="feature-card">
 
-			<div class="feature-card">
-				<h3>❓ Generate Quiz</h3>
-				<p>Create practice questions from your study material.</p>
-				<a href="/quiz">
-        <button type="button">
-            Generate Quiz
-        </button>
-    </a>
-			</div>
+                <h3>📝 Study Notes</h3>
 
-			<div class="feature-card">
-				<h3>💡 Ask Question</h3>
-				<p>Ask questions about your study material.</p>
-				<a href="/ask">
-        <button type="button">
-            Ask Question
-        </button>
-    </a>
-			</div>
+                <p>
+                    Create and manage your study notes.
+                </p>
 
-		</section>
+                <a href="/notes">
+                    <button type="button">
+                        View Notes
+                    </button>
+                </a>
 
-	</main>
+            </div>
+
+
+            <!-- Summarize -->
+            <div class="feature-card">
+
+                <h3>📚 Summarize</h3>
+
+                <p>
+                    Generate concise summaries from your study material.
+                </p>
+
+                <a href="/summarize">
+                    <button type="button">
+                        Summarize
+                    </button>
+                </a>
+
+            </div>
+
+
+            <!-- Generate Quiz -->
+            <div class="feature-card">
+
+                <h3>❓ Generate Quiz</h3>
+
+                <p>
+                    Create practice questions from your study material.
+                </p>
+
+                <a href="/quiz">
+                    <button type="button">
+                        Generate Quiz
+                    </button>
+                </a>
+
+            </div>
+
+
+            <!-- Ask Question -->
+            <div class="feature-card">
+
+                <h3>💡 Ask Question</h3>
+
+                <p>
+                    Ask questions about your study material.
+                </p>
+
+                <a href="/ask">
+                    <button type="button">
+                        Ask Question
+                    </button>
+                </a>
+
+            </div>
+
+
+            <!-- Upload Study Material -->
+            <div class="feature-card">
+
+                <h3>📤 Upload Study Material</h3>
+
+                <p>
+                    Upload PDF, Word, or text documents for studying.
+                </p>
+
+                <a href="{{ url_for('upload') }}">
+                    <button type="button">
+                        Upload Document
+                    </button>
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
 
 </body>
+
 </html>

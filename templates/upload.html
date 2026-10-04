@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Upload Study Material - AI Study Assistant</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="user-bar">
+
+        <span>
+            Welcome, {{ session["username"] }}!
+        </span>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+    <header>
+
+        <h1>Upload Study Material</h1>
+
+        <p>
+            Upload a PDF, Word document, or text file
+        </p>
+
+    </header>
+
+
+    <main>
+
+        <section class="welcome">
+
+            <h2>Upload a Document</h2>
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
+                <input
+                    type="file"
+                    name="file"
+                    accept=".pdf,.docx,.txt"
+                    required
+                >
+
+                <br><br>
+
+                <button type="submit">
+                    Upload Document
+                </button>
+
+            </form>
+
+        </section>
+
+
+        {% if error %}
+
+            <section class="feature-card">
+
+                <h3>Error</h3>
+
+                <p>{{ error }}</p>
+
+            </section>
+
+        {% endif %}
+
+
+        {% if extracted_text %}
+
+            <section class="feature-card">
+
+                <h2>Extracted Study Material</h2>
+
+                <textarea
+                    rows="20"
+                    style="width: 100%;"
+                    readonly
+                >{{ extracted_text }}</textarea>
+
+            </section>
+
+        {% endif %}
+
+
+        <br>
+
+        <a href="/">
+            ← Back to Home
+        </a>
+
+    </main>
+
+</body>
+
+</html>
