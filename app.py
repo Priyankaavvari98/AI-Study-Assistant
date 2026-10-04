@@ -1,10 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from functools import wraps
+import os
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from database import (
-	initialize_database,
-	get_all_notes,
-	add_note,
-	delete_note
+    initialize_database,
+    create_user,
+    get_user_by_username,
+    get_all_notes,
+    add_note,
+    delete_note
 )
 
 from ai_service import summarize_text, generate_quiz, answer_question
@@ -12,78 +17,221 @@ from ai_service import summarize_text, generate_quiz, answer_question
 
 app = Flask(__name__)
 
+# Secret key used for Flask sessions
+app.config["SECRET_KEY"] = os.environ.get(
+    "SECRET_KEY",
+    "dev-secret-key-change-this"
+)
+
 
 # Initialize the database
 initialize_database()
 
 
+# --------------------------------------------------
+# Authentication helper
+# --------------------------------------------------
+
+def login_required(route_function):
+    @wraps(route_function)
+    def wrapper(*args, **kwargs):
+
+        if "user_id" not in session:
+            return redirect(url_for("login"))
+
+        return route_function(*args, **kwargs)
+
+    return wrapper
+
+
+# --------------------------------------------------
 # Home page
+# --------------------------------------------------
+
 @app.route("/")
 def home():
-	return render_template("index.html")
+
+    return render_template("index.html")
 
 
+# --------------------------------------------------
+# Register
+# --------------------------------------------------
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+
+    if request.method == "POST":
+
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+        # Validate input
+        if not username or not password:
+            return render_template(
+                "register.html",
+                error="Username and password are required."
+            )
+
+        # Check whether username already exists
+        existing_user = get_user_by_username(username)
+
+        if existing_user:
+            return render_template(
+                "register.html",
+                error="Username already exists."
+            )
+
+        # Hash the password before storing it
+        hashed_password = generate_password_hash(password)
+
+        create_user(username, hashed_password)
+
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+
+# --------------------------------------------------
+# Login
+# --------------------------------------------------
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+        user = get_user_by_username(username)
+
+        # Check username and password
+        if user and check_password_hash(user["password"], password):
+
+            # Store logged-in user's information in session
+            session["user_id"] = user["id"]
+            session["username"] = user["username"]
+
+            return redirect(url_for("notes"))
+
+        return render_template(
+            "login.html",
+            error="Invalid username or password."
+        )
+
+    return render_template("login.html")
+
+
+# --------------------------------------------------
+# Logout
+# --------------------------------------------------
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(url_for("login"))
+
+
+# --------------------------------------------------
 # Notes page
+# --------------------------------------------------
+
 @app.route("/notes")
+@login_required
 def notes():
-	all_notes = get_all_notes()
 
-	return render_template(
-		"notes.html",
-		notes=all_notes
-	)
+    user_id = session["user_id"]
+
+    all_notes = get_all_notes(user_id)
+
+    return render_template(
+        "notes.html",
+        notes=all_notes
+    )
 
 
+# --------------------------------------------------
 # Add a note
+# --------------------------------------------------
+
 @app.route("/notes/add", methods=["POST"])
+@login_required
 def add_note_route():
 
-	title = request.form["title"]
-	content = request.form["content"]
+    title = request.form["title"]
+    content = request.form["content"]
 
-	add_note(title, content)
+    user_id = session["user_id"]
 
-	return redirect(url_for("notes"))
+    add_note(
+        title,
+        content,
+        user_id
+    )
+
+    return redirect(url_for("notes"))
 
 
+# --------------------------------------------------
 # Delete a note
+# --------------------------------------------------
+
 @app.route("/notes/delete/<int:note_id>", methods=["POST"])
+@login_required
 def delete_note_route(note_id):
 
-	delete_note(note_id)
+    user_id = session["user_id"]
 
-	return redirect(url_for("notes"))
+    delete_note(
+        note_id,
+        user_id
+    )
+
+    return redirect(url_for("notes"))
 
 
+# --------------------------------------------------
 # Summarize study material
+# --------------------------------------------------
+
 @app.route("/summarize", methods=["GET", "POST"])
+@login_required
 def summarize():
 
-	if request.method == "POST":
+    if request.method == "POST":
 
-		text = request.form["text"]
+        text = request.form["text"]
 
-		try:
-			summary = summarize_text(text)
+        try:
 
-			return render_template(
-				"summarize.html",
-				summary=summary,
-				text=text
-			)
+            summary = summarize_text(text)
 
-		except Exception as e:
+            return render_template(
+                "summarize.html",
+                summary=summary,
+                text=text
+            )
 
-			return render_template(
-				"summarize.html",
-				summary=f"Error: {str(e)}",
-				text=text
-			)
+        except Exception as e:
 
-	return render_template("summarize.html")
+            return render_template(
+                "summarize.html",
+                summary=f"Error: {str(e)}",
+                text=text
+            )
 
+    return render_template("summarize.html")
+
+
+# --------------------------------------------------
 # Generate AI quiz
+# --------------------------------------------------
+
 @app.route("/quiz", methods=["GET", "POST"])
+@login_required
 def quiz():
 
     if request.method == "POST":
@@ -109,8 +257,14 @@ def quiz():
             )
 
     return render_template("quiz.html")
+
+
+# --------------------------------------------------
 # Ask a question about study material
+# --------------------------------------------------
+
 @app.route("/ask", methods=["GET", "POST"])
+@login_required
 def ask():
 
     if request.method == "POST":
@@ -143,6 +297,13 @@ def ask():
 
     return render_template("ask.html")
 
+
+# --------------------------------------------------
 # Start the application
+# --------------------------------------------------
+
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    app.run(
+        debug=True,
+        use_reloader=False
+    )
