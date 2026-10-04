@@ -3,81 +3,142 @@
 
 <head>
 
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-	<meta name="viewport"
-		  content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-	<title>Generate Quiz - AI Study Assistant</title>
+    <title>Generate Quiz - AI Study Assistant</title>
 
-	<link rel="stylesheet"
-		  href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 
 <body>
+
 <div class="user-bar">
-    <span>Welcome, {{ session["username"] }}!</span>
-    <a href="{{ url_for('logout') }}">Logout</a>
+
+    <span>
+        Welcome, {{ session["username"] }}!
+    </span>
+
+    <a href="{{ url_for('logout') }}">
+        Logout
+    </a>
+
 </div>
-	<header>
-
-		<h1>❓ Generate Practice Quiz</h1>
-
-		<p>Test your knowledge using AI-generated questions</p>
-
-	</header>
 
 
-	<main>
+<header>
 
-		<section class="welcome">
+    <h1>❓ Generate Practice Quiz</h1>
 
-			<h2>Enter Your Study Material</h2>
+    <p>
+        Test your knowledge using AI-generated questions
+    </p>
 
-			<form action="/quiz" method="POST">
-
-				<textarea
-					name="text"
-					rows="15"
-					cols="80"
-					placeholder="Paste your study material here..."
-					required
-				>{{ text if text else "" }}</textarea>
-
-				<br><br>
-
-				<button type="submit">
-					✨ Generate Quiz
-				</button>
-
-			</form>
-
-		</section>
+</header>
 
 
-		{% if quiz %}
+<main>
 
-		<section class="feature-card">
+    <section class="welcome">
 
-			<h2>📝 Your Practice Quiz</h2>
-
-			<p style="white-space: pre-line;">
-				{{ quiz }}
-			</p>
-
-		</section>
-
-		{% endif %}
+        <h2>Enter Your Study Material</h2>
 
 
-		<br>
+        <form action="/quiz" method="POST">
 
-		<a href="/">
-			← Back to Home
-		</a>
+            <textarea
+                name="text"
+                rows="15"
+                cols="80"
+                placeholder="Paste your study material here..."
+                required
+            >{{ text if text else "" }}</textarea>
 
-	</main>
+
+            <br>
+            <br>
+
+
+            <!-- Number of Questions -->
+
+            <label for="number_of_questions">
+
+                <strong>
+                    Number of Questions:
+                </strong>
+
+            </label>
+
+
+            <select
+                name="number_of_questions"
+                id="number_of_questions"
+            >
+
+                <option value="5">
+                    5 Questions
+                </option>
+
+                <option value="10">
+                    10 Questions
+                </option>
+
+                <option value="15">
+                    15 Questions
+                </option>
+
+            </select>
+
+
+            <br>
+            <br>
+
+
+            <button type="submit">
+
+                ✨ Generate Quiz
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    {% if quiz %}
+
+    <section class="feature-card">
+
+        <h2>
+            📝 Your Practice Quiz
+        </h2>
+
+
+        <p style="white-space: pre-line;">
+
+            {{ quiz }}
+
+        </p>
+
+    </section>
+
+    {% endif %}
+
+
+    <br>
+
+
+    <a href="/">
+
+        ← Back to Home
+
+    </a>
+
+</main>
 
 </body>
 
