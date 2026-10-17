@@ -237,7 +237,7 @@ def register():
         )
 
         # Validate input
-        if not username or not password:
+        if not username and not password:
 
             return render_template(
                 "register.html",
